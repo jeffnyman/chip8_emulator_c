@@ -9,3 +9,30 @@ The initial compilation is simple:
 ```
 gcc main.c -std=c17 -Wall -Wextra -Wpedantic -Wconversion -Wmissing-prototypes -Wshadow -o chip8
 ```
+
+One of the first things I knew I needed to deal with was the concept of a byte. I wanted to see what would match up with the concept of a byte from a C data type. I tried this:
+
+```
+char char_type;
+printf("Size of char: %zu byte\n", sizeof(char_type));
+```
+
+On some implementations of gcc, I got the following:
+
+```
+unknown conversion type character 'z' in format [-Wformat=]
+```
+
+After a lot of searching, I found that you could add the following to the gcc compiler:
+
+```
+-D__USE_MINGW_ANSI_STDIO
+```
+
+So my compile command became:
+
+```
+gcc main.c -std=c17 -Wall -Wextra -Wpedantic -Wconversion -Wmissing-prototypes -Wshadow -D__USE_MINGW_ANSI_STDIO -o chip8
+```
+
+What that did was show me that they C `char` type would work as one byte. This obviously works because a byte is simply a structure or data type capable of storing an 8-bit unsigned integer. Thus a simple way to represent a byte is to create a type definition for one using a char, which is usually 8-bits in length, as my example test logic showed me. Thus this represents a single byte of memory in the CHIP-8.
