@@ -15,4 +15,8 @@ typedef union {
     } BYTE;
 } word;
 
+// prototypes
+
+char* parse_arguments(int, char*[]);
+
 #endif
