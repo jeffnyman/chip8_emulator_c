@@ -73,3 +73,18 @@ The problem there is that if we then if ran the emulator on a little-endian plat
 
 So the purpose of the `#ifdef BIGENDIAN` would be if you were planning to run the emulator on a big-endian architecture. You would want to supply that in the CFLAGS variable as `make CFLAGS=-DBIGENDIAN`. Since the byte-ordering of the CHIP-8 would then match the byte-ordering of the host platform, no translation would be needed when accessing the memory structure, since the 16-bit value of `$FFEE` would already be stored as `$FFEE` in memory; meaning, the 16-bit byte order would be the same on both platforms.
 
+## Memory
+
+The CHIP-8 has a memory and in order to do anyhting with it, you have to establish that memory. The memory should be 4 kB (4 kilobytes or 4096 bytes) large. CHIP-8's index register and program counter can only address 12 bits which, as it turns out, is 4096 addresses.
+
+This is interesting because the index register, program counter and stack entries are all actually 16 bits long. In theory this means that they could increment beyond 4 kB of memory addresses. In practice, no CHIP-8 ROM programs (that I'm aware of) do that. The early computers running CHIP-8 usually had less than 4 kB of RAM anyway.
+
+All of the memory is RAM and should be considered to be writable. This is because CHIP-8 ROM programs can, and do, modify themselves during execution.
+
+In my case, I put my `byte` to use:
+
+```c++
+byte* memory;
+```
+
+Memory, in my context, will be represented as a global variable that can be used in the form of a pointer to a malloc'd block of bytes. What this means is that a ROM program will essentially be loaded up as a big block of memory.
